@@ -8,8 +8,8 @@ In order to install the plugin, simply run: `bin/plugin -install elasticsearch/e
     ---------------------------------------
     | Hadoop Plugin    | ElasticSearch    |
     ---------------------------------------
-    | master           | 0.18 -> master   |
+    | master           | master (0.19)    |
     ---------------------------------------
-    | 1.0.0            | 0.18 -> master   |
+    | 1.0.0            | 0.18             |
     ---------------------------------------
 
