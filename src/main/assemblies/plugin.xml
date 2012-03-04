@@ -20,6 +20,7 @@
             <useTransitiveFiltering>true</useTransitiveFiltering>
             <includes>
                 <include>org.apache.hadoop:hadoop-core</include>
+                <include>commons-logging:commons-logging</include>
             </includes>
         </dependencySet>
     </dependencySets>
