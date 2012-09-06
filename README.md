@@ -31,6 +31,8 @@ The hadoop (HDFS) based gateway stores the cluster meta and indices data in hado
 
 The hadoop gateway requires two simple settings. The `gateway.hdfs.uri` controls the URI to connect to the hadoop cluster, for example: `hdfs://myhost:8022`. The `gateway.hdfs.path` controls the path under which the gateway will store the data. The `gateway.hdfs.concurrent_streams` allow to throttle the number of streams (per node) opened against the shared gateway performing the snapshot operation. It defaults to `5`.
 
+Note: When using the cloudera hadoop distribution, you need to replace the hadoop core jar provided by the plugin with the cloudera one - this also requires you to place the [guava-r09-jarjar.jar](https://repository.cloudera.com/content/repositories/third-party/org/apache/hadoop/thirdparty/guava/guava/r09-jarjar/) in the hadoop plugin directory.  
+
 License
 -------
 
