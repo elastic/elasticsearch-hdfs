@@ -87,13 +87,13 @@ public class HdfsGatewayTests {
     public void testHdfsGateway() throws Exception {
         // first, test meta data
         CreateIndexResponse createIndexResponse = node.client().admin().indices().create(createIndexRequest("test")).actionGet();
-        assertThat(createIndexResponse.acknowledged(), equalTo(true));
+        assertThat(createIndexResponse.isAcknowledged(), equalTo(true));
         node.close();
         node = buildNode().start();
 
         logger.info("--> waiting for green status");
         ClusterHealthResponse health = node.client().admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
-        assertThat(health.timedOut(), equalTo(false));
+        assertThat(health.isTimedOut(), equalTo(false));
 
         try {
             node.client().admin().indices().create(createIndexRequest("test")).actionGet();
@@ -104,19 +104,19 @@ public class HdfsGatewayTests {
 
         logger.info("Running Cluster Health (wait for the shards to startup)");
         ClusterHealthResponse clusterHealth = node.client().admin().cluster().health(clusterHealthRequest().waitForYellowStatus().waitForActiveShards(1)).actionGet();
-        logger.info("Done Cluster Health, status " + clusterHealth.status());
-        assertThat(clusterHealth.timedOut(), equalTo(false));
-        assertThat(clusterHealth.status(), equalTo(ClusterHealthStatus.YELLOW));
+        logger.info("Done Cluster Health, status " + clusterHealth.getStatus());
+        assertThat(clusterHealth.isTimedOut(), equalTo(false));
+        assertThat(clusterHealth.getStatus(), equalTo(ClusterHealthStatus.YELLOW));
 
         // Translog tests
         // create a mapping
         PutMappingResponse putMappingResponse = node.client().admin().indices().putMapping(putMappingRequest("test").type("type1")
                 .source(mappingSource())).actionGet();
-        assertThat(putMappingResponse.acknowledged(), equalTo(true));
+        assertThat(putMappingResponse.isAcknowledged(), equalTo(true));
 
         // verify that mapping is there
         ClusterStateResponse clusterState = node.client().admin().cluster().state(clusterStateRequest()).actionGet();
-        assertThat(clusterState.state().metaData().index("test").mapping("type1"), notNullValue());
+        assertThat(clusterState.getState().metaData().index("test").mapping("type1"), notNullValue());
 
         // create two and delete the first
         logger.info("Indexing #1");
@@ -140,20 +140,20 @@ public class HdfsGatewayTests {
 
         logger.info("Running Cluster Health (wait for the shards to startup)");
         clusterHealth = node.client().admin().cluster().health(clusterHealthRequest().waitForYellowStatus().waitForActiveShards(1)).actionGet();
-        logger.info("Done Cluster Health, status " + clusterHealth.status());
-        assertThat(clusterHealth.timedOut(), equalTo(false));
-        assertThat(clusterHealth.status(), equalTo(ClusterHealthStatus.YELLOW));
+        logger.info("Done Cluster Health, status " + clusterHealth.getStatus());
+        assertThat(clusterHealth.isTimedOut(), equalTo(false));
+        assertThat(clusterHealth.getStatus(), equalTo(ClusterHealthStatus.YELLOW));
 
         // verify that mapping is there
         clusterState = node.client().admin().cluster().state(clusterStateRequest()).actionGet();
-        assertThat(clusterState.state().metaData().index("test").mapping("type1"), notNullValue());
+        assertThat(clusterState.getState().metaData().index("test").mapping("type1"), notNullValue());
 
         logger.info("Getting #1, should not exists");
         GetResponse getResponse = node.client().get(getRequest("test").type("type1").id("1")).actionGet();
-        assertThat(getResponse.exists(), equalTo(false));
+        assertThat(getResponse.isExists(), equalTo(false));
         logger.info("Getting #2");
         getResponse = node.client().get(getRequest("test").type("type1").id("2")).actionGet();
-        assertThat(getResponse.sourceAsString(), equalTo(source("2", "test")));
+        assertThat(getResponse.getSourceAsString(), equalTo(source("2", "test")));
 
         // Now flush and add some data (so we have index recovery as well)
         logger.info("Flushing, so we have actual content in the index files (#2 should be in the index)");
@@ -173,19 +173,19 @@ public class HdfsGatewayTests {
 
         logger.info("Running Cluster Health (wait for the shards to startup)");
         clusterHealth = node.client().admin().cluster().health(clusterHealthRequest().waitForYellowStatus().waitForActiveShards(1)).actionGet();
-        logger.info("Done Cluster Health, status " + clusterHealth.status());
-        assertThat(clusterHealth.timedOut(), equalTo(false));
-        assertThat(clusterHealth.status(), equalTo(ClusterHealthStatus.YELLOW));
+        logger.info("Done Cluster Health, status " + clusterHealth.getStatus());
+        assertThat(clusterHealth.isTimedOut(), equalTo(false));
+        assertThat(clusterHealth.getStatus(), equalTo(ClusterHealthStatus.YELLOW));
 
         logger.info("Getting #1, should not exists");
         getResponse = node.client().get(getRequest("test").type("type1").id("1")).actionGet();
-        assertThat(getResponse.exists(), equalTo(false));
+        assertThat(getResponse.isExists(), equalTo(false));
         logger.info("Getting #2 (not from the translog, but from the index)");
         getResponse = node.client().get(getRequest("test").type("type1").id("2")).actionGet();
-        assertThat(getResponse.sourceAsString(), equalTo(source("2", "test")));
+        assertThat(getResponse.getSourceAsString(), equalTo(source("2", "test")));
         logger.info("Getting #3 (from the translog)");
         getResponse = node.client().get(getRequest("test").type("type1").id("3")).actionGet();
-        assertThat(getResponse.sourceAsString(), equalTo(source("3", "test")));
+        assertThat(getResponse.getSourceAsString(), equalTo(source("3", "test")));
 
         logger.info("Flushing, so we have actual content in the index files (#3 should be in the index now as well)");
         node.client().admin().indices().flush(flushRequest("test")).actionGet();
@@ -202,19 +202,19 @@ public class HdfsGatewayTests {
 
         logger.info("Running Cluster Health (wait for the shards to startup)");
         clusterHealth = node.client().admin().cluster().health(clusterHealthRequest().waitForYellowStatus().waitForActiveShards(1)).actionGet();
-        logger.info("Done Cluster Health, status " + clusterHealth.status());
-        assertThat(clusterHealth.timedOut(), equalTo(false));
-        assertThat(clusterHealth.status(), equalTo(ClusterHealthStatus.YELLOW));
+        logger.info("Done Cluster Health, status " + clusterHealth.getStatus());
+        assertThat(clusterHealth.isTimedOut(), equalTo(false));
+        assertThat(clusterHealth.getStatus(), equalTo(ClusterHealthStatus.YELLOW));
 
         logger.info("Getting #1, should not exists");
         getResponse = node.client().get(getRequest("test").type("type1").id("1")).actionGet();
-        assertThat(getResponse.exists(), equalTo(false));
+        assertThat(getResponse.isExists(), equalTo(false));
         logger.info("Getting #2 (not from the translog, but from the index)");
         getResponse = node.client().get(getRequest("test").type("type1").id("2")).actionGet();
-        assertThat(getResponse.sourceAsString(), equalTo(source("2", "test")));
+        assertThat(getResponse.getSourceAsString(), equalTo(source("2", "test")));
         logger.info("Getting #3 (not from the translog, but from the index)");
         getResponse = node.client().get(getRequest("test").type("type1").id("3")).actionGet();
-        assertThat(getResponse.sourceAsString(), equalTo(source("3", "test")));
+        assertThat(getResponse.getSourceAsString(), equalTo(source("3", "test")));
 
         logger.info("Deleting the index");
         node.client().admin().indices().delete(deleteIndexRequest("test")).actionGet();
