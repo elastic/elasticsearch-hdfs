@@ -17,7 +17,7 @@ In order to install the plugin, simply run: `bin/plugin -install elasticsearch/e
     | 1.0.0            | 0.18             | 0.20.204.0              |
     -----------------------------------------------------------------
 
-The hadoop plugin contains embedded version of hadoop jar files to communicate with hadoop. It can be replaced with the actual version of haddop one is using.
+The hadoop plugin contains embedded version of hadoop jar files to communicate with hadoop. It can be replaced with the actual version of hadoop one is using.
 
 Hadoop Gateway
 --------------
