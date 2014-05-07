@@ -1,7 +1,11 @@
-Hadoop Plugin for ElasticSearch
-==================================
+Deprecated by [repository-hdfs](https://github.com/elasticsearch/elasticsearch-hadoop/tree/master/repository-hdfs)
+===
+ 
 
-The Hadoop plugin allows to use Hadoop as a shared gateway for ElasticSearch.
+Hadoop Plugin for Elasticsearch
+-------------------------------
+
+The Hadoop plugin allows to use Hadoop as a shared gateway for Elasticsearch.
 
 In order to install the plugin, simply run: `bin/plugin -install elasticsearch/elasticsearch-hadoop/1.2.0`.
 
